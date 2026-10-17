@@ -1,0 +1,142 @@
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char accountName[50];
+    char password[50];
+    char loginName[50];
+    char loginPassword[50];
+
+    int choice;
+    int count = 0;
+    int i;
+
+    float balance = 500.00;
+    float amount;
+    float lastAmount = 0.00;
+
+    char lastTransaction[20] = "None";
+    char history[100][50];
+
+    printf("===== BSIT BANK =====\n");
+    printf("ACCOUNT REGISTRATION\n");
+
+    printf("Create account name: ");
+    scanf(" %49[^\n]", accountName);
+
+    printf("Create password: ");
+    scanf(" %49s", password);
+
+    printf("\nAccount created successfully!\n");
+
+    printf("\n===== ACCOUNT LOGIN =====\n");
+
+    printf("Enter account name: ");
+    scanf(" %49[^\n]", loginName);
+
+    printf("Enter password: ");
+    scanf(" %49s", loginPassword);
+
+    if (strcmp(accountName, loginName) != 0 ||
+        strcmp(password, loginPassword) != 0) {
+        printf("\nIncorrect account name or password!\n");
+        printf("Access denied.\n");
+        return 0;
+    }
+
+    printf("\nLogin successful!\n");
+    printf("Welcome, %s!\n", accountName);
+
+    do {
+        printf("\n===== BSIT BANK =====\n");
+        printf("Account: %s\n", accountName);
+        printf("[1] Balance Inquiry\n");
+        printf("[2] Deposit\n");
+        printf("[3] Withdraw\n");
+        printf("[4] Exit\n");
+        printf("[5] Transaction Receipt\n");
+        printf("[6] Transaction History\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\nCurrent Balance: P%.2f\n", balance);
+                break;
+
+            case 2:
+                printf("Enter amount to deposit: P");
+                scanf("%f", &amount);
+
+                if (amount > 0) {
+                    balance += amount;
+                    lastAmount = amount;
+                    strcpy(lastTransaction, "Deposit");
+
+                    snprintf(history[count % 100], 50,
+                             "Deposit: P%.2f", amount);
+                    count++;
+
+                    printf("Deposit successful!\n");
+                } else {
+                    printf("Invalid amount!\n");
+                }
+                break;
+
+            case 3:
+                printf("Enter amount to withdraw: P");
+                scanf("%f", &amount);
+
+                if (amount <= 0) {
+                    printf("Invalid amount!\n");
+                } else if (balance - amount < 100.00) {
+                    printf("Withdrawal denied! You must maintain "
+                           "at least P100.00 in your account.\n");
+                } else {
+                    balance -= amount;
+                    lastAmount = amount;
+                    strcpy(lastTransaction, "Withdrawal");
+
+                    snprintf(history[count % 100], 50,
+                             "Withdrawal: P%.2f", amount);
+                    count++;
+
+                    printf("Withdrawal successful!\n");
+                }
+                break;
+
+            case 4:
+                printf("Thank you for using BSIT BANK, %s!\n",
+                       accountName);
+                break;
+
+            case 5:
+                printf("\n===== TRANSACTION RECEIPT =====\n");
+                printf("Account Name: %s\n", accountName);
+                printf("Transaction: %s\n", lastTransaction);
+                printf("Amount: P%.2f\n", lastAmount);
+                printf("Current Balance: P%.2f\n", balance);
+                printf("===============================\n");
+                break;
+
+            case 6:
+                printf("\n===== TRANSACTION HISTORY =====\n");
+
+                if (count == 0) {
+                    printf("No transactions yet.\n");
+                } else {
+                    for (i = 0; i < count && i < 100; i++) {
+                        printf("%d. %s\n", i + 1, history[i]);
+                    }
+                }
+                break;
+
+            default:
+                printf("Invalid choice! Select 1 to 6.\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
